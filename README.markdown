@@ -1,12 +1,14 @@
 # Installing #
 
-There are two ways to install clojure-json:
+There are three ways to install clojure-json:
 
 * Use `ant` to compile to a JAR:
   * To package .class files and .clj sources use: `ant -Dclojure.jar=/path/to/clojure.jar`
   * To package only .clj sources use: `ant`
   * Add `clojure-json.jar` to your classpath
 * Just add the `src` directory to your classpath
+* Install with Maven 2.1.0
+  * mvn install
 
 # Using The Encoder #
 
@@ -52,11 +54,11 @@ There are two ways to install clojure-json:
       "bam":4,
       "quux":"bar"
     }nil
-    
+
 # Custom Encoding #
-`clojure-json` uses a [multimethod](http://clojure.org/multimethods) for custom encoding, dispatching on type.  
+`clojure-json` uses a [multimethod](http://clojure.org/multimethods) for custom encoding, dispatching on type.
 If you're adding an encoder function for a container type make sure to respect all of the indentation arguments
-that your function will be passed and to call encode-helper on each of the elements in your container.  
+that your function will be passed and to call encode-helper on each of the elements in your container.
 I've left the parameters to date-encoder un-hinted in this example in the interest of brevity but their inclusion
 does seem to speed up execution time a good bit so I suggest using them where speed matters.
 
