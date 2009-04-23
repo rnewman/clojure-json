@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>clojure</groupId>
+    <groupId>org.clojure</groupId>
     <artifactId>clojure-pom</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
   <groupId>org.danlarkin</groupId>
   <artifactId>clojure-json</artifactId>
   <name>${artifactId}</name>
-  <version>${parent.version}</version>
+  <version>1.0-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
@@ -33,8 +34,28 @@
               </tasks>
             </configuration>
           </execution>
+          <execution>
+            <id>test</id>
+            <configuration>
+              <tasks>
+                <java classname="clojure.main" classpathref="maven.test.classpath"
+                      dir="${basedir}" fork="true">
+                  <arg value="-e"/>
+                  <arg value='(load "test")'/>
+                </java>
+              </tasks>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojure-contrib</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
