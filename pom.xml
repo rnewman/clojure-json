@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.clojure</groupId>
     <artifactId>clojure-pom</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
   </parent>
   <groupId>org.danlarkin</groupId>
   <artifactId>clojure-json</artifactId>
@@ -38,8 +38,10 @@
             <id>test</id>
             <configuration>
               <tasks>
-                <java classname="clojure.main" classpathref="maven.test.classpath"
-                      dir="${basedir}" fork="true">
+                <java classname="clojure.main"
+                      classpathref="maven.test.classpath"
+                      dir="${basedir}"
+                      fork="true">
                   <arg value="-e"/>
                   <arg value='(load "test")'/>
                 </java>
