@@ -1,9 +1,9 @@
 (ns clojure-json
   (:require (org.danlarkin [json :as json]))
-  (:use (clojure.contrib [test-is :as test-is])))
+  (:use (clojure test)))
 
 ;setup JSON encoder-decoder checker test
-(defmethod test-is/assert-expr :json=
+(defmethod assert-expr :json=
   [msg form]
   `(let [values# (list ~@(next form))
          json-form# (first values#)
