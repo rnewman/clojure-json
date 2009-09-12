@@ -145,7 +145,7 @@
      (string? value) (.append writer (str current-indent \" (escaped-str value) \"))
      (number? value) (.append writer (str current-indent value))
      (keyword? value) (.append writer
-			       (str current-indent \" (escaped-str (name value)) \"))
+			       (str current-indent \" (escaped-str (subs (str value) 1)) \"))
      (symbol? value) (encode-symbol value writer pad)
      (map-entry? value) (encode-map-entry value writer pad current-indent indent-size)
      (coll? value) (encode-coll value writer pad next-indent current-indent indent-size)
