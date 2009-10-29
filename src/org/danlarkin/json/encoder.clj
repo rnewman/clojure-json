@@ -73,8 +73,10 @@
   "Encodes a single key:value pair into JSON."
   [#^clojure.lang.MapEntry pair #^Writer writer
    #^String pad #^String current-indent #^Integer indent-size]
-  (let [next-indent (get-next-indent current-indent indent-size)]
-    (encode-helper (key pair) writer pad current-indent indent-size)
+  (let [next-indent (get-next-indent current-indent indent-size)
+	k (key pair)
+	ke (if (integer? k) (str k) k)]
+    (encode-helper ke writer pad current-indent indent-size)
     (.append writer ":")
     (encode-helper (val pair) writer pad "" indent-size next-indent)))
 

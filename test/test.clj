@@ -21,8 +21,6 @@
                 :actual (list '~'not= json-form# decoded-string#)}))
      result#))
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Basics         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,6 +52,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       Numbers         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(deftest single-object-int-key
+  (is (= "{\"1\":1}"
+         (json/encode-to-str {1 1}))))
+
 (deftest easy-number
   (is (:json= 10)))
 
