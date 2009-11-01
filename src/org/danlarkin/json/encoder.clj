@@ -74,8 +74,8 @@
   [#^clojure.lang.MapEntry pair #^Writer writer
    #^String pad #^String current-indent #^Integer indent-size]
   (let [next-indent (get-next-indent current-indent indent-size)
-	k (key pair)
-	ke (if (integer? k) (str k) k)]
+        k (key pair)
+        ke (if (integer? k) (str k) k)]
     (encode-helper ke writer pad current-indent indent-size)
     (.append writer ":")
     (encode-helper (val pair) writer pad "" indent-size next-indent)))
@@ -101,7 +101,7 @@
       \u000C "\\f"
       \u000D "\\r"
       \u0022 "\\\""
-      \u005C "\\\\"      
+      \u005C "\\\\"
       })
 
 (defn- escaped-char
@@ -125,8 +125,8 @@
   (apply str (map escaped-char string)))
 
 (defmulti encode-custom
-  ;Multimethod for encoding classes of objects that
-  ;aren't handled by the default encode-helper.
+  ;; Multimethod for encoding classes of objects that
+  ;; aren't handled by the default encode-helper.
   (fn [value & _] (type value)))
 
 (defmethod
@@ -147,7 +147,7 @@
      (string? value) (.append writer (str current-indent \" (escaped-str value) \"))
      (number? value) (.append writer (str current-indent value))
      (keyword? value) (.append writer
-			       (str current-indent \" (escaped-str (subs (str value) 1)) \"))
+                               (str current-indent \" (escaped-str (subs (str value) 1)) \"))
      (symbol? value) (encode-symbol value writer pad)
      (map-entry? value) (encode-map-entry value writer pad current-indent indent-size)
      (coll? value) (encode-coll value writer pad next-indent current-indent indent-size)

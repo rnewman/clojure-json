@@ -78,9 +78,9 @@
   "Takes a java.io.Reader pointing to JSON-encoded data and
    returns a clojure datastructure."
   [reader]
-  ; Unless we're already dealing with a BufferedReader, wrap the supplied reader in one
-  ; (this ensures we have a consistent interface supporting mark/reset regardless which
-  ; subclass of Reader we were passed).  For now, we'll use the default buffer length.
+  ;; Unless we're already dealing with a BufferedReader, wrap the supplied reader in one
+  ;; (this ensures we have a consistent interface supporting mark/reset regardless which
+  ;; subclass of Reader we were passed).  For now, we'll use the default buffer length.
   (if (isa? reader BufferedReader)
     (decoder/decode-from-buffered-reader reader)
     (decoder/decode-from-buffered-reader (BufferedReader. reader))))
