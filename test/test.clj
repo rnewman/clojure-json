@@ -56,6 +56,10 @@
   (is (= "{\"1\":1}"
          (json/encode-to-str {1 1}))))
 
+(deftest single-object-bignum-key
+  (is (= "{\"1.0E25\":1}"
+         (json/encode-to-str {1e25 1}))))
+
 (deftest easy-number
   (is (:json= 10)))
 
