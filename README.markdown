@@ -7,7 +7,7 @@ There are three ways to install clojure-json:
   * To package only .clj sources use: `ant`
   * Add `clojure-json.jar` to your classpath
 * Just add the `src` directory to your classpath
-* Install with Maven 2.1.0
+* Install with Maven
   * mvn install
 
 # Using The Encoder #
