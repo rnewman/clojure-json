@@ -1,14 +1,8 @@
 # Installing #
 
-There are three ways to install clojure-json:
+clojure-json is on [clojars](http://clojars.org)! [http://clojars.org/org.danlarkin/clojure-json](http://clojars.org/org.danlarkin/clojure-json)
 
-* Use `ant` to compile to a JAR:
-  * To package .class files and .clj sources use: `ant -Dclojure.jar=/path/to/clojure.jar`
-  * To package only .clj sources use: `ant`
-  * Add `clojure-json.jar` to your classpath
-* Just add the `src` directory to your classpath
-* Install with Maven
-  * mvn install
+To install from source you can `lein install` but likely you can just add this project as a dependency like it says on [http://clojars.org/org.danlarkin/clojure-json](http://clojars.org/org.danlarkin/clojure-json).
 
 # Using The Encoder #
 
