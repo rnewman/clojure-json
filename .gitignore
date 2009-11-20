@@ -6,3 +6,5 @@ bin
 build/
 target/
 clojure-json.jar
+pom.xml
+Manifest.txt
