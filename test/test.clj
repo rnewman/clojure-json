@@ -1,4 +1,4 @@
-(ns clojure-json
+(ns test
   (:require (org.danlarkin [json :as json]))
   (:use (clojure test)))
 
