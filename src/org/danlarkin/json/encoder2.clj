@@ -5,7 +5,7 @@
 (set! *warn-on-reflection* true)
 
 (defprotocol Jsonable
-  (to-json [value #^Writer writer])
+  (to-json [value #^Writer writer indent-size indent])
   (start-token [_])
   (end-token [_]))
 
@@ -14,7 +14,11 @@
 (defn start-token-array [_] "[")
 (defn end-token-array [_] "]")
 
-(defn to-json-nil [value #^Writer writer]
+(definline maybe-write-newline [#^Writer writer indent-size]
+  `(when-not (zero? ~indent-size)
+     (.write ~writer (int \newline))))
+
+(defn to-json-nil [value #^Writer writer indent-size indent]
   (.write writer "null"))
 
 (def #^{:private true} escape-map
@@ -45,32 +49,39 @@
 
 (defn to-json-string
   "Returns an escaped (per RFC4627, section 2.5) version of the input string"
-  [value #^Writer writer]
+  [value #^Writer writer indent-size indent]
+  (.write writer #^String (apply str (repeat indent " ")))
   (.write writer "\"")
   (let [#^String v (as-str value)]
     (dotimes [i (.length v)]
       (.write writer (str (escaped-char (.charAt v i))))))
   (.write writer "\""))
 
-(defn to-json-literal [value #^java.io.Writer writer]
+(defn to-json-literal [value #^java.io.Writer writer indent-size indent]
+  (.write writer #^String (apply str (repeat indent " ")))
   (.write writer (str value)))
 
-(defn to-json-collection [value #^java.io.Writer writer]
+(defn to-json-collection [value #^java.io.Writer writer indent-size indent]
+  (.write writer #^String (apply str (repeat indent " ")))
   (.write writer #^String (start-token value))
+  (maybe-write-newline writer indent-size)
   (when-let [v (first value)]
-    (to-json v writer))
+    (to-json v writer indent-size (+ indent indent-size)))
   (doseq [v (rest value)]
     (.write writer ",")
-    (to-json v writer))
+    (maybe-write-newline writer indent-size)
+    (to-json v writer indent-size (+ indent indent-size)))
+  (maybe-write-newline writer indent-size)
+  (.write writer #^String (apply str (repeat indent " ")))
   (.write writer #^String (end-token value)))
 
-(defn to-json-map-entry [value #^Writer writer]
+(defn to-json-map-entry [value #^Writer writer indent-size indent]
   (to-json (let [k (key value)]
              (if (keyword? k)
                (subs (str k) 1)
-               (str k))) writer)
+               (str k))) writer indent-size indent)
   (.write writer ":")
-  (to-json (val value) writer))
+  (to-json (val value) writer indent-size indent))
 
 (extend java.lang.CharSequence Jsonable
         {:to-json to-json-string})
@@ -105,6 +116,8 @@
    and returns a JSON-encoded string representation
    in a java.lang.String."
   [value & opts]
-  (let [writer (java.io.StringWriter.)]
-    (to-json value writer)
+  (let [writer (java.io.StringWriter.)
+        opts (apply hash-map opts)
+        indent-size (:indent opts 0)]
+    (to-json value writer indent-size 0)
     (.toString writer)))
