@@ -139,7 +139,3 @@
         encoded-json (json/encode-to-str decoded-json)
         re-decoded-json (json/decode-from-str encoded-json)]
     (is (= decoded-json re-decoded-json))))
-
-
-
-(run-tests)
