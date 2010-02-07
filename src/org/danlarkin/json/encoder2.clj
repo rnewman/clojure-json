@@ -5,7 +5,7 @@
 (set! *warn-on-reflection* true)
 
 (defprotocol Jsonable
-  (to-json [value #^Writer writer indent-size indent])
+  (to-json [value #^Writer writer indent-size indent start-inline])
   (start-token [_])
   (end-token [_]))
 
@@ -18,7 +18,7 @@
   `(when-not (zero? ~indent-size)
      (.write ~writer (int \newline))))
 
-(defn to-json-nil [value #^Writer writer indent-size indent]
+(defn to-json-nil [value #^Writer writer indent-size indent start-inline]
   (.write writer "null"))
 
 (def #^{:private true} escape-map
@@ -49,7 +49,7 @@
 
 (defn to-json-string
   "Returns an escaped (per RFC4627, section 2.5) version of the input string"
-  [value #^Writer writer indent-size indent]
+  [value #^Writer writer indent-size indent start-inline]
   (.write writer #^String (apply str (repeat indent " ")))
   (.write writer "\"")
   (let [#^String v (as-str value)]
@@ -57,31 +57,34 @@
       (.write writer (str (escaped-char (.charAt v i))))))
   (.write writer "\""))
 
-(defn to-json-literal [value #^java.io.Writer writer indent-size indent]
+(defn to-json-literal
+  [value #^java.io.Writer writer indent-size indent start-inline]
   (.write writer #^String (apply str (repeat indent " ")))
   (.write writer (str value)))
 
-(defn to-json-collection [value #^java.io.Writer writer indent-size indent]
-  (.write writer #^String (apply str (repeat indent " ")))
+(defn to-json-collection
+  [value #^java.io.Writer writer indent-size indent start-inline]
+  (when-not start-inline
+    (.write writer #^String (apply str (repeat indent " "))))
   (.write writer #^String (start-token value))
   (maybe-write-newline writer indent-size)
   (when-let [v (first value)]
-    (to-json v writer indent-size (+ indent indent-size)))
+    (to-json v writer indent-size (+ indent indent-size) false))
   (doseq [v (rest value)]
     (.write writer ",")
     (maybe-write-newline writer indent-size)
-    (to-json v writer indent-size (+ indent indent-size)))
+    (to-json v writer indent-size (+ indent indent-size) false))
   (maybe-write-newline writer indent-size)
   (.write writer #^String (apply str (repeat indent " ")))
   (.write writer #^String (end-token value)))
 
-(defn to-json-map-entry [value #^Writer writer indent-size indent]
+(defn to-json-map-entry [value #^Writer writer indent-size indent start-inline]
   (to-json (let [k (key value)]
              (if (keyword? k)
                (subs (str k) 1)
-               (str k))) writer indent-size indent)
+               (str k))) writer indent-size indent start-inline)
   (.write writer ":")
-  (to-json (val value) writer indent-size indent))
+  (to-json (val value) writer indent-size indent true))
 
 (extend java.lang.CharSequence Jsonable
         {:to-json to-json-string})
@@ -119,5 +122,5 @@
   (let [writer (java.io.StringWriter.)
         opts (apply hash-map opts)
         indent-size (:indent opts 0)]
-    (to-json value writer indent-size 0)
+    (to-json value writer indent-size 0 false)
     (.toString writer)))
