@@ -32,9 +32,11 @@
 (defn- convert-number
   "Converts x to an int iff it can be done without losing significance"
   [x]
-  ;; NumberFormat will return a long if necessary, and
-  ;; eventually fall into Double.
-  (let [ix (.parse (java.text.NumberFormat/getIntegerInstance) x)]
+  (let [ix (try
+             (int x)
+             (catch java.lang.IllegalArgumentException e
+               ;; Too large.
+               nil))]
     (if (= ix x)
       ix
       x)))
