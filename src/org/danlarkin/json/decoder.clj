@@ -32,7 +32,9 @@
 (defn- convert-number
   "Converts x to an int iff it can be done without losing significance"
   [x]
-  (let [ix (int x)]
+  ;; NumberFormat will return a long if necessary, and
+  ;; eventually fall into Double.
+  (let [ix (.parse (java.text.NumberFormat/getIntegerInstance) x)]
     (if (= ix x)
       ix
       x)))
